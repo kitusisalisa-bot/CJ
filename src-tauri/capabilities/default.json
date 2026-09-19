@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Permissions par défaut — application 100% locale. Aucune capacité réseau/http n'est déclarée ou installée : le plugin HTTP de Tauri n'est pas une dépendance du projet, ce qui rend toute requête réseau impossible depuis le frontend.",
+  "description": "Permissions par défaut — application 100% locale. Aucune capacité réseau/http n'est déclarée ou installée : le plugin HTTP de Tauri n'est pas une dépendance du projet, ce qui rend toute requête réseau impossible depuis le frontend. Les permissions fs:allow-read-text-file / fs:allow-write-text-file servent uniquement à l'export/import manuel de sauvegarde JSON, sur un chemin choisi explicitement par l'utilisateur via la boîte de dialogue système (dialog:allow-open / allow-save) — jamais un accès disque arbitraire déclenché sans action de l'utilisateur.",
   "windows": ["main"],
   "permissions": [
     "core:default",
@@ -14,6 +14,8 @@
     "fs:allow-app-write",
     "fs:allow-app-create",
     "fs:scope-appdata-recursive",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
     "dialog:allow-open",
     "dialog:allow-save",
     "dialog:allow-message"

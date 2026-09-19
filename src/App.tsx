@@ -3,13 +3,17 @@ import { CahierJournalDoubleNiveau } from "@/components/cahier-journal/CahierJou
 import { TableauCursifProjection } from "@/components/projection/TableauCursifProjection";
 import { ElevesPage } from "@/components/eleves/ElevesPage";
 import { AgendaPage } from "@/components/agenda/AgendaPage";
+import { SequencesPage } from "@/components/fiches-prep/SequencesPage";
+import { ReglagesPage } from "@/components/reglages/ReglagesPage";
 
-type Module = "cahier" | "eleves" | "agenda";
+type Module = "cahier" | "fiches-prep" | "eleves" | "agenda" | "reglages";
 
 const ONGLETS: { module: Module; label: string }[] = [
   { module: "cahier", label: "Cahier journal" },
+  { module: "fiches-prep", label: "Fiches de prép" },
   { module: "eleves", label: "Élèves" },
   { module: "agenda", label: "Agenda" },
+  { module: "reglages", label: "Réglages" },
 ];
 
 export default function App() {
@@ -42,8 +46,10 @@ export default function App() {
       </nav>
 
       {module === "cahier" && <CahierJournalDoubleNiveau onOuvrirModeClasse={setModeClasseDate} />}
+      {module === "fiches-prep" && <SequencesPage />}
       {module === "eleves" && <ElevesPage />}
       {module === "agenda" && <AgendaPage />}
+      {module === "reglages" && <ReglagesPage />}
     </div>
   );
 }

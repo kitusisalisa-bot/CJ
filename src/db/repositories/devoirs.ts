@@ -25,6 +25,13 @@ function rowToDevoir(row: DevoirRow): Devoir {
   };
 }
 
+/** Tous les devoirs, toutes dates confondues — pour l'export de sauvegarde. */
+export async function listAllDevoirs(): Promise<Devoir[]> {
+  const db = await getDb();
+  const rows = await db.select<DevoirRow[]>("SELECT * FROM devoirs ORDER BY date_donnee");
+  return rows.map(rowToDevoir);
+}
+
 /** Devoirs donnés à une date donnée (typiquement le jour affiché en Mode Classe). */
 export async function listDevoirsDonnesLe(date: string): Promise<Devoir[]> {
   const db = await getDb();

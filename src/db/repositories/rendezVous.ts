@@ -33,6 +33,13 @@ function rowToRendezVous(row: RendezVousRow): RendezVous {
   };
 }
 
+/** Tous les RDV, toutes dates confondues — pour l'export de sauvegarde. */
+export async function listAllRendezVous(): Promise<RendezVous[]> {
+  const db = await getDb();
+  const rows = await db.select<RendezVousRow[]>("SELECT * FROM rendez_vous ORDER BY date");
+  return rows.map(rowToRendezVous);
+}
+
 /** Tous les RDV à partir d'une date donnée (incluse), triés chronologiquement. */
 export async function listRendezVousAVenir(depuisDate: string): Promise<RendezVous[]> {
   const db = await getDb();

@@ -33,6 +33,15 @@ interface CreneauSeanceRow {
   s_updated_at: string | null;
 }
 
+/** Tous les créneaux bruts (sans jointure séance), pour l'export de sauvegarde. */
+export async function listAllCreneaux(): Promise<Creneau[]> {
+  const db = await getDb();
+  const rows = await db.select<Parameters<typeof rowToCreneau>[0][]>(
+    "SELECT * FROM creneaux ORDER BY date, heure_debut",
+  );
+  return rows.map(rowToCreneau);
+}
+
 /** Récupère tous les créneaux d'une date, avec la séance liée si présente. */
 export async function listCreneauxDuJour(date: string): Promise<CreneauAvecSeance[]> {
   const db = await getDb();

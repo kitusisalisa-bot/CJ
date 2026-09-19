@@ -23,6 +23,13 @@ function rowToRituel(row: RituelRow): Rituel {
   };
 }
 
+/** Tous les rituels, toutes dates confondues — pour l'export de sauvegarde. */
+export async function listAllRituels(): Promise<Rituel[]> {
+  const db = await getDb();
+  const rows = await db.select<RituelRow[]>("SELECT * FROM rituels ORDER BY date");
+  return rows.map(rowToRituel);
+}
+
 export async function listRituelsDuJour(date: string): Promise<Rituel[]> {
   const db = await getDb();
   const rows = await db.select<RituelRow[]>(

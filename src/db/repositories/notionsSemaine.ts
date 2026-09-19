@@ -23,6 +23,13 @@ function rowToNotion(row: NotionRow): NotionSemaine {
   };
 }
 
+/** Toutes les notions, toutes semaines confondues — pour l'export de sauvegarde. */
+export async function listAllNotionsSemaine(): Promise<NotionSemaine[]> {
+  const db = await getDb();
+  const rows = await db.select<NotionRow[]>("SELECT * FROM notions_semaine ORDER BY semaine_debut");
+  return rows.map(rowToNotion);
+}
+
 export async function listNotionsSemaine(semaineDebut: string): Promise<NotionSemaine[]> {
   const db = await getDb();
   const rows = await db.select<NotionRow[]>(
