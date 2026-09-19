@@ -6,6 +6,8 @@ dist-ssr
 # Tauri / Rust
 src-tauri/target
 src-tauri/Cargo.lock
+# Schémas JSON régénérés automatiquement par la CLI Tauri (ex: `tauri icon`)
+src-tauri/gen/
 
 # Bases de données locales (données élèves — jamais versionnées)
 *.sqlite
