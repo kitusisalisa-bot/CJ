@@ -1,0 +1,41 @@
+name: Build Windows installer
+
+# Compile l'application pour Windows dans le cloud (GitHub Actions), afin que
+# l'utilisatrice n'ait rien à installer (Node/Rust/Git) sur son propre poste
+# pour obtenir un .exe/.msi prêt à double-cliquer.
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - claude/cahier-journal-offline-app-qc6sqv
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Installer les dépendances frontend
+        run: npm install
+
+      - name: Compiler l'application (frontend + installateur Windows)
+        run: npm run tauri:build
+
+      - name: Publier l'installateur comme artefact téléchargeable
+        uses: actions/upload-artifact@v4
+        with:
+          name: cahier-journal-windows-installer
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          if-no-files-found: error
