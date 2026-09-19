@@ -34,11 +34,26 @@ function lundiDe(date: Date): string {
   return format(startOfWeek(date, { weekStartsOn: 1, locale: fr }), ISO);
 }
 
+/**
+ * Le cahier journal n'affiche que les jours ouvrés (Lundi-Vendredi). Un week-end
+ * est donc ramené au lundi suivant, pour que "jourSelectionne" reste toujours
+ * dans "joursSemaine" — sinon les créneaux du jour sélectionné ne seraient
+ * jamais chargés (chargerSemaine ne récupère que les 5 jours ouvrés).
+ */
+function jourOuvreLePlusProche(date: Date): Date {
+  const jourSemaine = date.getDay(); // 0 = dimanche, 6 = samedi
+  if (jourSemaine === 6) return addDays(date, 2);
+  if (jourSemaine === 0) return addDays(date, 1);
+  return date;
+}
+
+const aujourdhui = jourOuvreLePlusProche(new Date());
+
 export const useCahierJournal = create<CahierJournalState>((set, get) => ({
-  semaineDebut: lundiDe(new Date()),
-  joursSemaine: joursDeLaSemaine(lundiDe(new Date())),
+  semaineDebut: lundiDe(aujourdhui),
+  joursSemaine: joursDeLaSemaine(lundiDe(aujourdhui)),
   creneauxParJour: {},
-  jourSelectionne: format(new Date(), ISO),
+  jourSelectionne: format(aujourdhui, ISO),
   chargement: false,
 
   allerSemaineSuivante: () => {
@@ -54,11 +69,12 @@ export const useCahierJournal = create<CahierJournalState>((set, get) => ({
   },
 
   allerAujourdhui: () => {
-    const lundi = lundiDe(new Date());
+    const aujourdhui = jourOuvreLePlusProche(new Date());
+    const lundi = lundiDe(aujourdhui);
     set({
       semaineDebut: lundi,
       joursSemaine: joursDeLaSemaine(lundi),
-      jourSelectionne: format(new Date(), ISO),
+      jourSelectionne: format(aujourdhui, ISO),
     });
     void get().chargerSemaine();
   },
