@@ -13,23 +13,29 @@ interface VueJourneeProps {
   date: string;
 }
 
+type Formulaire =
+  | { mode: "nouveau"; groupe: GroupeCreneau }
+  | { mode: "edition"; creneau: CreneauAvecSeance };
+
 export function VueJournee({ date }: VueJourneeProps) {
   const creneauxParJour = useCahierJournal((s) => s.creneauxParJour);
   const ajouterCreneau = useCahierJournal((s) => s.ajouterCreneau);
+  const modifierCreneau = useCahierJournal((s) => s.modifierCreneau);
+  const supprimerCreneau = useCahierJournal((s) => s.supprimerCreneau);
   const eleves = useEleves((s) => s.eleves);
-  const [formulaireGroupe, setFormulaireGroupe] = useState<GroupeCreneau | null>(null);
+  const [formulaire, setFormulaire] = useState<Formulaire | null>(null);
 
   const creneauxJour = creneauxParJour[date] ?? [];
   const communs = creneauxParGroupe(creneauxJour, ["COMMUN"]);
   const gs = creneauxParGroupe(creneauxJour, ["GS_DIRIGE", "GS_AUTONOME"]);
   const ce2 = creneauxParGroupe(creneauxJour, ["CE2_DIRIGE", "CE2_AUTONOME"]);
 
-  function ouvrirFormulaire(groupe: GroupeCreneau) {
-    setFormulaireGroupe(groupe);
+  function ouvrirNouveau(groupe: GroupeCreneau) {
+    setFormulaire({ mode: "nouveau", groupe });
   }
 
-  function handleCreneauClick(_c: CreneauAvecSeance) {
-    // Emplacement prévu pour ouvrir le détail / l'édition de la fiche de séance liée.
+  function handleCreneauClick(creneau: CreneauAvecSeance) {
+    setFormulaire({ mode: "edition", creneau });
   }
 
   return (
@@ -57,25 +63,36 @@ export function VueJournee({ date }: VueJourneeProps) {
           creneaux={gs}
           effectif={elevesGS(eleves).length}
           onCreneauClick={handleCreneauClick}
-          onAjouterCreneau={() => ouvrirFormulaire("GS_DIRIGE")}
+          onAjouterCreneau={() => ouvrirNouveau("GS_DIRIGE")}
         />
         <ColonneNiveau
           niveau="CE2"
           creneaux={ce2}
           effectif={elevesCE2(eleves).length}
           onCreneauClick={handleCreneauClick}
-          onAjouterCreneau={() => ouvrirFormulaire("CE2_DIRIGE")}
+          onAjouterCreneau={() => ouvrirNouveau("CE2_DIRIGE")}
         />
       </div>
 
       <RituelsPanel date={date} />
 
-      {formulaireGroupe && (
+      {formulaire?.mode === "nouveau" && (
         <CreneauForm
           date={date}
-          groupeParDefaut={formulaireGroupe}
+          groupeParDefaut={formulaire.groupe}
           onValider={ajouterCreneau}
-          onFermer={() => setFormulaireGroupe(null)}
+          onFermer={() => setFormulaire(null)}
+        />
+      )}
+
+      {formulaire?.mode === "edition" && (
+        <CreneauForm
+          date={date}
+          groupeParDefaut={formulaire.creneau.groupe}
+          creneau={formulaire.creneau}
+          onValider={(input) => modifierCreneau({ ...formulaire.creneau, ...input })}
+          onSupprimer={() => supprimerCreneau(formulaire.creneau.id)}
+          onFermer={() => setFormulaire(null)}
         />
       )}
     </div>
