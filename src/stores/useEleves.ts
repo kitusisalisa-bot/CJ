@@ -1,14 +1,17 @@
 import { create } from "zustand";
-import { listEleves } from "@/db/repositories/eleves";
+import { createEleve, deleteEleve, listEleves, updateEleve } from "@/db/repositories/eleves";
 import type { Eleve } from "@/types/models";
 
 interface ElevesState {
   eleves: Eleve[];
   chargement: boolean;
   charger: () => Promise<void>;
+  ajouterEleve: (input: Omit<Eleve, "id" | "createdAt" | "updatedAt">) => Promise<Eleve>;
+  modifierEleve: (eleve: Eleve) => Promise<void>;
+  supprimerEleve: (id: string) => Promise<void>;
 }
 
-export const useEleves = create<ElevesState>((set) => ({
+export const useEleves = create<ElevesState>((set, get) => ({
   eleves: [],
   chargement: false,
   charger: async () => {
@@ -19,6 +22,19 @@ export const useEleves = create<ElevesState>((set) => ({
     } finally {
       set({ chargement: false });
     }
+  },
+  ajouterEleve: async (input) => {
+    const eleve = await createEleve(input);
+    await get().charger();
+    return eleve;
+  },
+  modifierEleve: async (eleve) => {
+    await updateEleve(eleve);
+    await get().charger();
+  },
+  supprimerEleve: async (id) => {
+    await deleteEleve(id);
+    await get().charger();
   },
 }));
 
