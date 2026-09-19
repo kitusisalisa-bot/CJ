@@ -1,0 +1,21 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permissions par défaut — application 100% locale. Aucune capacité réseau/http n'est déclarée ou installée : le plugin HTTP de Tauri n'est pas une dépendance du projet, ce qui rend toute requête réseau impossible depuis le frontend.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "sql:default",
+    "sql:allow-execute",
+    "sql:allow-select",
+    "sql:allow-load",
+    "fs:default",
+    "fs:allow-app-read",
+    "fs:allow-app-write",
+    "fs:allow-app-create",
+    "fs:scope-appdata-recursive",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "dialog:allow-message"
+  ]
+}

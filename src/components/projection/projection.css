@@ -1,0 +1,29 @@
+/*
+ * Police cursive scolaire — chargée localement (aucune requête réseau).
+ * Déposez les fichiers de police dans src/assets/fonts/ (voir README.md
+ * de ce dossier pour les recommandations de licence). Tant que les fichiers
+ * ne sont pas présents, la variable retombe sur "cursive" (police système).
+ */
+@font-face {
+  font-family: "CursiveEcole";
+  src:
+    url("../../assets/fonts/cursive-regular.woff2") format("woff2"),
+    url("../../assets/fonts/cursive-regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-cursive: "CursiveEcole", cursive;
+  --font-sans: system-ui, sans-serif;
+}
+
+.mode-classe {
+  font-family: var(--font-sans);
+}
+
+.mode-classe .texte-cursif {
+  font-family: var(--font-cursive);
+  line-height: 1.3;
+}
